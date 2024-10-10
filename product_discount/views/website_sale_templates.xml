@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <!-- Inherit the website sale product template -->
+        <template id="website_sale_product_template_inherit" inherit_id="website_sale.product_price">
+            <xpath expr="//span[@class='oe_price']" position="replace">
+                <div class="price">
+                    <t t-if="product.discount_percentage > 0">
+                        <span class="oe_price_old" t-field="product.list_price"
+                              t-options='{"widget": "monetary", "display_currency": product.currency_id}'/>
+                        <br/>
+                        <span class="oe_price_discounted" t-field="product.discounted_price"
+                              t-options='{"widget": "monetary", "display_currency": product.currency_id}'/>
+                    </t>
+                    <t t-else="">
+                        <span class="oe_price" t-field="product.list_price"
+                              t-options='{"widget": "monetary", "display_currency": product.currency_id}'/>
+                    </t>
+                </div>
+            </xpath>
+        </template>
+
+        <template id="website_sale_cart_products_inherit" inherit_id="website_sale.cart_lines">
+            <xpath expr="//div[@name='website_sale_cart_line_price']/span[@t-out='product_price']" position="before">
+                <t t-if="line.product_id.product_tmpl_id.discounted_price > 0"
+                   t-set='product_price'
+                   t-value='line.product_id.product_tmpl_id.discounted_price'/>
+            </xpath>
+        </template>
+    </data>
+</odoo>
+
